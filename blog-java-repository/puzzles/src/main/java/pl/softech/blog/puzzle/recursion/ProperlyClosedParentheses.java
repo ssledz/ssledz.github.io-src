@@ -50,8 +50,8 @@ public class ProperlyClosedParentheses {
     }
 
     public static void main(String[] args) {
-	System.out.println(parentheses(6).size());
-	parentheses(4).forEach(System.out::println);
+	System.out.println(parentheses(3).size());
+	parentheses(3).forEach(System.out::println);
     }
 
 }
