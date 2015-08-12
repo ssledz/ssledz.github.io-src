@@ -18,22 +18,28 @@ public class ProperlyClosedParenthesesTest extends TestCase {
     public void testParentheses() throws Exception {
 
 	List<String> result = parentheses(0);
-	assertThat(result.size(), equalTo(0));
+	assertThat(result, equalTo(Arrays.asList("")));
 
 	result = parentheses(1);
 	assertThat(result, equalTo(Arrays.asList("{}")));
 
 	result = parentheses(2);
-	assertThat(result, equalTo(Arrays.asList("{}{}", "{{}}")));
+	assertThat(result, equalTo(Arrays.asList( "{{}}", "{}{}")));
 
 	result = parentheses(3);
 	assertThat(result, equalTo(Arrays.asList(
-			"{}{}{}",
+			"{{{}}}",
 			"{{}{}}",
-			"{}{{}}",
 			"{{}}{}",
-			"{{{}}}"
+			"{}{{}}",
+			"{}{}{}"
 	)));
+
+	// C_n = n-th Catalan number
+	assertThat(parentheses(4).size(), equalTo(14)); // C_4
+	assertThat(parentheses(5).size(), equalTo(42)); // C_5
+	assertThat(parentheses(6).size(), equalTo(132)); // C_6
+	assertThat(parentheses(7).size(), equalTo(429)); // C_7
 
     }
 }

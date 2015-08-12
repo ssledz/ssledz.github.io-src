@@ -1,46 +1,57 @@
 package pl.softech.blog.puzzle.recursion;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Implement an algorithm to print all valid (e.g., properly opened and closed)
  * combinations of n-pairs of parentheses.
+ * <p>
+ * parentheses(0) = ''
+ * parentheses(1) = '{}'
+ * parentheses(2) = '{}{}', '{{}}'
+ * parentheses(3) = '{}{}{}', '{{}{}}', '{}{{}}', '{{}}{}', '{{{}}}'
+ * </p>
+
+ * Number of such combination = Catalan number
+ * 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440
  *
  * @author ssledz
  */
 public class ProperlyClosedParentheses {
 
     public static List<String> parentheses(int n) {
+	return parentheses("", n, n);
+    }
 
-	if (n == 0) {
-	    return Collections.emptyList();
-	}
+    private static List<String> parentheses(String str, int left, int right) {
 
-	if (n == 1) {
+	if (right == 0) {
 	    List<String> ret = new LinkedList<>();
-	    ret.add("{}");
+	    ret.add(str);
 	    return ret;
 	}
 
 	List<String> ret = new LinkedList<>();
 
-	List<String> ps = parentheses(n - 1);
-	for (String p : ps) {
+	if (left > 0) {
+	    ret.addAll(parentheses(str + "{", left - 1, right));
 
-	    ret.add("{}" + p);
-	    if (!("{}" + p).equals(p + "{}")) {
-		ret.add(p + "{}");
+	    if (left < right) {
+		ret.addAll(parentheses(str + "}", left, right - 1));
 	    }
-	    ret.add("{" + p + "}");
 
+	} else {
+	    ret.addAll(parentheses(str + "}", left, right - 1));
 	}
+
 	return ret;
+
     }
 
     public static void main(String[] args) {
-	parentheses(3).forEach(System.out::println);
+	System.out.println(parentheses(6).size());
+	parentheses(4).forEach(System.out::println);
     }
 
 }
