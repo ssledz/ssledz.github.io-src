@@ -15,6 +15,21 @@ public class Fibonacci {
 
     private static long[] FIB = new long[100];
 
+    /*
+fibonacci(5)
+-fibonacci(4)
+--fibonacci(3)
+---fibonacci(2)
+----fibonacci(1) -> 1
+----fibonacci(0) -> 0
+---fibonacci(2) -> 1
+---fibonacci(1) -> 1
+--fibonacci(3) -> 2
+--fibonacci(2) -> 2
+-fibonacci(4) -> 3
+-fibonacci(3) -> 2
+fibonacci(5) -> 5
+    */
     public static long fibonacci(int n) {
 
 	if (n == 0 || n == 1) {
@@ -31,6 +46,32 @@ public class Fibonacci {
 
     }
 
+    /*
+
+slowFibonacci(5)
+-slowFibonacci(4)
+--slowFibonacci(3)
+---slowFibonacci(2)
+----slowFibonacci(1) -> 1
+----slowFibonacci(0) -> 0
+---slowFibonacci(2) -> 1
+---slowFibonacci(1) -> 1
+--slowFibonacci(3) -> 2
+--slowFibonacci(2)
+---slowFibonacci(1) -> 1
+---slowFibonacci(0) -> 0
+--slowFibonacci(2) -> 1
+-slowFibonacci(4) -> 3
+-slowFibonacci(3)
+--slowFibonacci(2)
+---slowFibonacci(1) -> 1
+---slowFibonacci(0) -> 1
+--slowFibonacci(2) -> 1
+--slowFibonacci(1) -> 1
+-slowFibonacci(3) -> 2
+slowFibonacci(5) -> 5
+
+     */
     public static long slowFibonacci(int n) {
 
 	if (n == 0 || n == 1) {
