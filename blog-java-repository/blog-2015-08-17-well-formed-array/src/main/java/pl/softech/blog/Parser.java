@@ -3,6 +3,7 @@ package pl.softech.blog;
 import pl.softech.blog.Token.Type;
 
 /**
+ * [[][]]
  * Created by ssledz on 18.08.15.
  */
 public class Parser {

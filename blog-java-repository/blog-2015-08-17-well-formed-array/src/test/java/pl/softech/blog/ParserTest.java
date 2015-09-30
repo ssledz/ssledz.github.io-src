@@ -20,6 +20,10 @@ public class ParserTest {
         assertThat(parser.isWellFormedArray("[1 2 [-34] [7] 34]"), equalTo(true));
         assertThat(parser.isWellFormedArray("[1 2 [-34 [7] 34]"), equalTo(false));
         assertThat(parser.isWellFormedArray("[1 2 [-34 [7] 34]]"), equalTo(true));
+        assertThat(parser.isWellFormedArray("[]"), equalTo(true));
+        assertThat(parser.isWellFormedArray("[][]"), equalTo(false));
+        assertThat(parser.isWellFormedArray("[[]]"), equalTo(true));
+        assertThat(parser.isWellFormedArray("[1 2[-34[7]34]]"), equalTo(true));
 
     }
 }
