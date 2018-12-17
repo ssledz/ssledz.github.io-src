@@ -1,24 +1,30 @@
 package pl.softech.learning.fp
 
+import pl.softech.learning.fp.MonadInstances.ErrorOr
+
 object Example extends App {
 
-  def doSomething(): Option[List[String]] = {
-    Some(List("1", "2", "3"))
+  def doSomething1(): ErrorOr[List[String]] = {
+    Right(List("1", "2", "3"))
+  }
+
+  def doSomething2(): ErrorOr[List[String]] = {
+    Left("An Error")
   }
 
   import MonadInstances._
 
-  val mO: Monad[Option] = Monad[Option]
+  val mE: Monad[ErrorOr] = Monad[ErrorOr]
   val mL: Monad[List] = Monad[List]
 
 
-  mO.flatMap(doSomething())(xs => Some(mL.map(xs)(x => Integer.parseInt(x))))
+  mE.flatMap(doSomething1())(xs => Right(mL.map(xs)(x => Integer.parseInt(x))))
 
 
   val numbers = for {
 
-    l1 <- doSomething()
-    l2 <- doSomething()
+    l1 <- doSomething1()
+    l2 <- doSomething2()
 
   } yield {
 
@@ -35,8 +41,8 @@ object Example extends App {
 
   val numbers2 = for {
 
-    n1 <- ListT(doSomething())
-    n2 <- ListT(doSomething())
+    n1 <- ListT(doSomething1())
+    n2 <- ListT(doSomething1())
 
   } yield ((n1, n2), Integer.parseInt(n1) + Integer.parseInt(n2))
 

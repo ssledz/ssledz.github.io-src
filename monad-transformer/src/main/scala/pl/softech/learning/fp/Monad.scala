@@ -18,11 +18,21 @@ object Monad {
 
 object MonadInstances {
 
+  type ErrorOr[A] = Either[String, A]
+
   implicit val optionInstance: Monad[Option] = new Monad[Option] {
 
     override def pure[A](x: A): Option[A] = Option(x)
 
     override def flatMap[A, B](xs: Option[A])(f: A => Option[B]): Option[B] = xs.flatMap(f)
+  }
+
+  implicit val errorOrInstance: Monad[ErrorOr] = new Monad[ErrorOr] {
+
+    override def pure[A](x: A): ErrorOr[A] = Right(x)
+
+    override def flatMap[A, B](xs: ErrorOr[A])(f: A => ErrorOr[B]): ErrorOr[B] = xs.flatMap(f)
+
   }
 
   implicit val listInstance: Monad[List] = new Monad[List] {
