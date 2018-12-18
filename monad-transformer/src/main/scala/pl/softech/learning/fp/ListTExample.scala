@@ -4,17 +4,17 @@ import pl.softech.learning.fp.MonadInstances.ErrorOr
 
 import scala.util.Try
 
-object Example extends App {
+object ListTExample extends App {
 
-  def doSomething1(): ErrorOr[List[String]] = {
+  def findAll1(): ErrorOr[List[String]] = {
     Right(List("1", "2", "3"))
   }
 
-  def doSomething2(): ErrorOr[List[String]] = {
+  def findAll2(): ErrorOr[List[String]] = {
     Left("An Error")
   }
 
-  def doSomething3(): ErrorOr[List[String]] = {
+  def findAll3(): ErrorOr[List[String]] = {
     Right(List("1", "2", "s"))
   }
 
@@ -26,9 +26,6 @@ object Example extends App {
 
   val mE: Monad[ErrorOr] = Monad[ErrorOr]
   val mL: Monad[List] = Monad[List]
-
-
-  //  mE.flatMap(doSomething1())(xs => Right(mL.map(xs)(x => Integer.parseInt(x))))
 
 
   def addNumbers(xs: ErrorOr[List[String]], ys: ErrorOr[List[String]]): ErrorOr[List[((Int, Int), Int)]] = {
@@ -70,9 +67,9 @@ object Example extends App {
     }
   }
 
-  println(addNumbers(doSomething1(), doSomething1()))
-  println(addNumbers(doSomething1(), doSomething2()))
-  println(addNumbers(doSomething1(), doSomething3()))
+  println(addNumbers(findAll1(), findAll1()))
+  println(addNumbers(findAll1(), findAll2()))
+  println(addNumbers(findAll1(), findAll3()))
 
   def addNumbers2(xs: ErrorOr[List[String]], ys: ErrorOr[List[String]]): ListT[ErrorOr, ((Int, Int), Int)] = for {
 
@@ -83,8 +80,8 @@ object Example extends App {
 
   } yield ((x, y), x + y)
 
-  println(addNumbers2(doSomething1(), doSomething1()).value)
-  println(addNumbers2(doSomething1(), doSomething2()).value)
-  println(addNumbers2(doSomething1(), doSomething3()).value)
+  println(addNumbers2(findAll1(), findAll1()).value)
+  println(addNumbers2(findAll1(), findAll2()).value)
+  println(addNumbers2(findAll1(), findAll3()).value)
 
 }
