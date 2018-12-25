@@ -14,7 +14,7 @@ object OptionTExample extends App {
 
   def findAddressByUserId(userId: Long): Future[Option[Address]] = Future.successful(Some(Address(1L, "Aspekt")))
 
-  //  def findStreetByLogin(login: String): Function[String] =
+  //  def findStreetByLogin(login: String): Future[String] =
   //    for {
   //      user <- findUserByLogin(login)
   //      address <- findAddressByUserId(user.id)
@@ -25,17 +25,37 @@ object OptionTExample extends App {
   //    address <- findAddressByUserId(user.id)
   //  } yield address.street
 
-  //  def findStreetByLogin(login : String) : Function[Option[String]] =
+  import concurrent.ExecutionContext.Implicits.global
+
+  //  def findStreetByLogin(login: String): Future[Option[String]] =
   //    for {
-  //      user <- findUserByLogin(login)
-  //      address <- findAddressByUserId(user.map(_.id).getOrElse(-1))
+  //      maybeUser <- findUserByLogin(login)
+  //      user <- maybeUser
+  //      address <- findAddressByUserId(user.id)
   //    } yield address.map(_.street)
+
+  //  def findStreetByLogin(login: String): Future[Option[String]] =
+  //    findUserByLogin(login).flatMap {
+  //      case Some(user) => findAddressByUserId(user.id).map(_.map(_.street))
+  //      case None => Future.successful(None)
+  //    }
+
+  def findStreetByLogin(login: String): OptionFuture[String] =
+    for {
+      user <- OptionFuture(findUserByLogin(login))
+      address <- OptionFuture(findAddressByUserId(user.id))
+    } yield address.street
 
   val street = for {
     user <- OptionT(findUserByLogin("ss"))
     address <- OptionT(findAddressByUserId(user.id))
   } yield address.street
 
+  val res = findStreetByLogin("ss").value
+
+  Thread.sleep(500)
+
+  println(res)
   println(street.value)
 
 }

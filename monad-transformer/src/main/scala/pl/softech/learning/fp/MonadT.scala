@@ -1,5 +1,7 @@
 package pl.softech.learning.fp
 
+import scala.concurrent.{ExecutionContext, Future}
+
 case class ListT[F[_], A](value: F[List[A]]) {
 
   def flatMap[B](f: A => ListT[F, B])(implicit F: Monad[F]): ListT[F, B] = flatMapF(a => f(a).value)
@@ -14,6 +16,24 @@ case class ListT[F[_], A](value: F[List[A]]) {
 
   def map[B](f: A => B)(implicit m: Monad[F]): ListT[F, B] = ListT(m.map(value) { x => x.map(f) })
 
+}
+
+case class OptionFuture[A](value: Future[Option[A]]) {
+  def flatMap[B](f: A => OptionFuture[B])(implicit ex: ExecutionContext): OptionFuture[B] =
+    flatMapF(a => f(a).value)
+
+  def flatMapF[B](f: A => Future[Option[B]])(implicit ex: ExecutionContext): OptionFuture[B] =
+    OptionFuture(
+      value.flatMap { as =>
+        as match {
+          case Some(a) => f(a)
+          case _ => Future.successful(None)
+        }
+      }
+    )
+
+  def map[B](f: A => B)(implicit ex: ExecutionContext): OptionFuture[B] =
+    OptionFuture(value.map { x => x.map(f) })
 }
 
 case class OptionT[F[_], A](value: F[Option[A]]) {
