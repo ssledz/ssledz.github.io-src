@@ -2,7 +2,9 @@ package pl.softech.learning.fp
 
 import pl.softech.learning.fp.MonadInstances._
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 object OptionTExample extends App {
 
@@ -25,8 +27,6 @@ object OptionTExample extends App {
   //    address <- findAddressByUserId(user.id)
   //  } yield address.street
 
-  import concurrent.ExecutionContext.Implicits.global
-
   //  def findStreetByLogin(login: String): Future[Option[String]] =
   //    for {
   //      maybeUser <- findUserByLogin(login)
@@ -40,22 +40,20 @@ object OptionTExample extends App {
   //      case None => Future.successful(None)
   //    }
 
-  def findStreetByLogin(login: String): OptionFuture[String] =
+  //  def findStreetByLogin(login: String): OptionFuture[String] =
+  //    for {
+  //      user <- OptionFuture(findUserByLogin(login))
+  //      address <- OptionFuture(findAddressByUserId(user.id))
+  //    } yield address.street
+
+  def findStreetByLogin(login: String): OptionT[Future, String] =
     for {
-      user <- OptionFuture(findUserByLogin(login))
-      address <- OptionFuture(findAddressByUserId(user.id))
+      user <- OptionT(findUserByLogin(login))
+      address <- OptionT(findAddressByUserId(user.id))
     } yield address.street
 
-  val street = for {
-    user <- OptionT(findUserByLogin("ss"))
-    address <- OptionT(findAddressByUserId(user.id))
-  } yield address.street
-
-  val res = findStreetByLogin("ss").value
-
-  Thread.sleep(500)
+  val res = Await.result(findStreetByLogin("ss").value, Duration.Inf)
 
   println(res)
-  println(street.value)
 
 }

@@ -22,15 +22,15 @@ case class OptionFuture[A](value: Future[Option[A]]) {
   def flatMap[B](f: A => OptionFuture[B])(implicit ex: ExecutionContext): OptionFuture[B] =
     flatMapF(a => f(a).value)
 
-  def flatMapF[B](f: A => Future[Option[B]])(implicit ex: ExecutionContext): OptionFuture[B] =
-    OptionFuture(
-      value.flatMap { as =>
-        as match {
-          case Some(a) => f(a)
-          case _ => Future.successful(None)
-        }
+  def flatMapF[B](f: A => Future[Option[B]])
+                 (implicit ex: ExecutionContext): OptionFuture[B] = OptionFuture(
+    value.flatMap { as =>
+      as match {
+        case Some(a) => f(a)
+        case _ => Future.successful(None)
       }
-    )
+    }
+  )
 
   def map[B](f: A => B)(implicit ex: ExecutionContext): OptionFuture[B] =
     OptionFuture(value.map { x => x.map(f) })

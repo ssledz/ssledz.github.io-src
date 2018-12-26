@@ -1,6 +1,6 @@
 package pl.softech.learning.fp
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait Monad[M[_]] {
 
@@ -45,13 +45,12 @@ object MonadInstances {
 
   }
 
-  implicit val futureInstance: Monad[Future] = new Monad[Future] {
+  implicit def futureInstance(implicit ex: ExecutionContext): Monad[Future] =
+    new Monad[Future] {
 
-    import scala.concurrent.ExecutionContext.Implicits.global
+      override def pure[A](x: A): Future[A] = Future.successful(x)
 
-    override def pure[A](x: A): Future[A] = Future.successful(x)
-
-    override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)
-  }
+      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)
+    }
 
 }
