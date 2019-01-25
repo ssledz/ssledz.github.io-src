@@ -50,7 +50,7 @@ object MonadInstances {
 
       override def pure[A](x: A): Future[A] = Future.successful(x)
 
-      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)
+      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)(ex)
     }
 
 }
