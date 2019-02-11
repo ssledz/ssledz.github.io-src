@@ -30,6 +30,13 @@ object MonadInstances {
       xs.flatMap(f)
   }
 
+  implicit val listInstance: Monad[List] = new Monad[List] {
+    override def pure[A](x: A): List[A] = List.pure(x)
+
+    override def flatMap[A, B](xs: List[A])(f: A => List[B]): List[B] =
+      xs.flatMap(f)
+  }
+
   implicit def eitherInstance[A]: Monad[({type E[B] = Either[A, B]})#E] = new Monad[({type E[B] = Either[A, B]})#E] {
     override def pure[B](x: B): Either[A, B] = Either.pure(x)
 
