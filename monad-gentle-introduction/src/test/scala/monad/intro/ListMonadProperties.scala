@@ -1,37 +1,15 @@
 package monad.intro
 
-import org.scalacheck._
+import monad.intro.MonadInstances._
+import org.scalacheck.{Arbitrary, Gen}
 
-object ListMonadProperties extends Properties("ListMonad") {
+case object ListMonadProperties extends AbstractMonadProperties[String, Int, Int, List]("ListMonad") {
 
-  import MonadInstances._
-  import Prop.forAll
+  override implicit val arbA: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  property("Left identity: return a >>= f ≡ f a") = forAll { (a: String, b: String, c: String) =>
+  override implicit val arbM: Arbitrary[List[String]] = Generators.listArbitrary[String]
 
-    val f: String => List[String] = x => List(x, x + b, x + c)
+  override implicit val arbF: Arbitrary[String => List[Int]] = Arbitrary(Gen.oneOf(Seq(x => List(x.length))))
 
-    val g: String => List[Int] = x => List(x.length)
-
-    Monad[List].pure(a).flatMap(f) == f(a)
-  }
-
-  property("Right identity: m >>= return ≡ m") = forAll { (a: String, b: String, c: String) =>
-
-    val l = List(a, b, c)
-
-    l.flatMap(Monad[List].pure) == l
-  }
-
-  property("Associativity: (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)") = forAll { (a: String, b: String, c: String) =>
-
-    val f: String => List[String] = x => List(x, x + b, x + c)
-
-    val g: String => List[Int] = x => List(x.length)
-
-    val l = List(a, b, c)
-
-    l.flatMap(f).flatMap(g) == l.flatMap(x => f(x).flatMap(g))
-  }
-
+  override implicit val arbG: Arbitrary[Int => List[Int]] = Arbitrary(Gen.oneOf(Seq(x => List(x - 1, x, x + 1))))
 }
