@@ -19,6 +19,13 @@ trait Generators {
   implicit def eitherArbitrary[A, B](implicit arbl: Arbitrary[A], arbr: Arbitrary[B]): Arbitrary[Either[A, B]] = Arbitrary(
     frequency(3 -> arbl.arbitrary.map(Left(_)), 7 -> arbr.arbitrary.map(Right(_)))
   )
+
+  implicit def writerArbitrary[L, A](implicit arbl: Arbitrary[L], arba: Arbitrary[A]): Arbitrary[Writer[L, A]] = Arbitrary(
+    for {
+      l <- arbl.arbitrary
+      a <- arba.arbitrary
+    } yield Writer((l, a))
+  )
 }
 
 object Generators extends Generators

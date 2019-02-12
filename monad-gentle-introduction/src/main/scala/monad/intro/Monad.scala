@@ -43,4 +43,10 @@ object MonadInstances {
     override def flatMap[B, C](xs: Either[A, B])(f: B => Either[A, C]): Either[A, C] = xs.flatMap(f)
   }
 
+  implicit def writerInstance[L](implicit m: Monoid[L]): Monad[({type W[A] = Writer[L, A]})#W] = new Monad[({type W[A] = Writer[L, A]})#W] {
+    override def pure[A](x: A): Writer[L, A] = Writer.pure(x)
+
+    override def flatMap[A, B](xs: Writer[L, A])(f: A => Writer[L, B]): Writer[L, B] = xs.flatMap(f)
+  }
+
 }
