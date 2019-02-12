@@ -5,9 +5,9 @@ import org.scalacheck._
 
 abstract class AbstractMonadProperties[A, B, C, M[_] : Monad](name: String) extends Properties(name) {
 
-  implicit def arbA: Arbitrary[A]
+  implicit val arbA: Arbitrary[A]
 
-  implicit def arbM: Arbitrary[M[A]]
+  implicit val arbM: Arbitrary[M[A]]
 
   implicit val arbF: Arbitrary[A => M[B]]
 
@@ -15,16 +15,24 @@ abstract class AbstractMonadProperties[A, B, C, M[_] : Monad](name: String) exte
 
   private val monad = implicitly[Monad[M]]
 
+  import monad._
+
   property("Left identity: return a >>= f ≡ f a") = forAll { (a: A, f: A => M[B]) =>
-    monad.flatMap(monad.pure(a))(f) == f(a)
+    (`return`(a) >>= f) == f(a)
   }
 
   property("Right identity: m >>= return ≡ m") = forAll { m: M[A] =>
-    monad.flatMap(m)(monad.pure) == m
+    (m >>= `return`) == m
   }
 
   property("Associativity: (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)") = forAll { (m: M[A], f: A => M[B], g: B => M[C]) =>
-    monad.flatMap(monad.flatMap(m)(f))(g) == monad.flatMap(m)(x => monad.flatMap(f(x))(g))
+    ((m >>= f) >>= g) == (m >>= (x => f(x) >>= g))
+  }
+
+  private val `return`: A => M[A] = pure _
+
+  private implicit class MonadOps[A](m: M[A]) {
+    def >>=[B](f: A => M[B]): M[B] = monad.flatMap(m)(f)
   }
 
 }

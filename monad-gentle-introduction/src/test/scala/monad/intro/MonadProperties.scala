@@ -12,4 +12,8 @@ import org.scalacheck.Properties
 
 object MonadProperties extends Properties("Monad") {
   include(ListMonadProperties)
+  include(OptionMonadProperties)
+  include(TryMonadProperties)
+  include(EitherMonadProperties)
 }
+
