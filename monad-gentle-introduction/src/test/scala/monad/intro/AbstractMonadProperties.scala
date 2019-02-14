@@ -15,8 +15,6 @@ abstract class AbstractMonadProperties[A, B, C, M[_] : Monad](name: String) exte
 
   private val monad = implicitly[Monad[M]]
 
-  import monad._
-
   property("Left identity: return a >>= f ≡ f a") = forAll { (a: A, f: A => M[B]) =>
     (`return`(a) >>= f) == f(a)
   }
@@ -29,7 +27,7 @@ abstract class AbstractMonadProperties[A, B, C, M[_] : Monad](name: String) exte
     ((m >>= f) >>= g) == (m >>= (x => f(x) >>= g))
   }
 
-  private val `return`: A => M[A] = pure _
+  private val `return`: A => M[A] = monad.pure _
 
   private implicit class MonadOps[A](m: M[A]) {
     def >>=[B](f: A => M[B]): M[B] = monad.flatMap(m)(f)
