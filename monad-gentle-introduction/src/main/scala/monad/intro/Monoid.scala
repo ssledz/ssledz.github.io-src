@@ -10,11 +10,18 @@ trait Monoid[M] {
 
 object MonoidInstances {
 
-  implicit def listInstance[A]: Monoid[List[A]] = new Monoid[List[A]] {
+  implicit def monoidListInstance[A]: Monoid[List[A]] = new Monoid[List[A]] {
 
     override def combine(x: List[A], y: List[A]): List[A] = x ::: y
 
     override def empty: List[A] = List.empty
+  }
+
+  implicit val monoidStrInstance: Monoid[String] = new Monoid[String] {
+
+    override def combine(x: String, y: String): String = x + y
+
+    override def empty: String = ""
   }
 
 }

@@ -41,23 +41,6 @@ object List {
   def pure[A](x: A): List[A] = ::(x, Nil)
 }
 
-case class ::[A](head: A, tail: List[A]) extends List[A] {
-
-  override def equals(obj: Any): Boolean = {
-
-    @tailrec
-    def eq(l: List[A], r: List[A]): Boolean = (l, r) match {
-      case (hl :: tl, hr :: tr) if hl == hr => eq(tl, tr)
-      case (Nil, Nil) => true
-      case _ => false
-    }
-
-    obj match {
-      case xs: List[A] => eq(this, xs)
-      case _ => false
-    }
-
-  }
-}
+case class ::[A](head: A, tail: List[A]) extends List[A]
 
 case object Nil extends List[Nothing]
