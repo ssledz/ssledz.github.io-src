@@ -26,6 +26,12 @@ trait Generators {
       a <- arba.arbitrary
     } yield Writer((l, a))
   )
+
+  implicit def stateArbitrary[S, A](implicit arba: Arbitrary[A]): Arbitrary[State[S, A]] = Arbitrary(
+    for {
+      a <- arba.arbitrary
+    } yield State.pure(a)
+  )
 }
 
 object Generators extends Generators

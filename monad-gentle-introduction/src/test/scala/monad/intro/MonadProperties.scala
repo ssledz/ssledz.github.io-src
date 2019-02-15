@@ -16,5 +16,6 @@ object MonadProperties extends Properties("Monad") {
   include(TryMonadProperties)
   include(EitherMonadProperties)
   include(WriterMonadProperties)
+//  include(StateMonadProperties)
 }
 

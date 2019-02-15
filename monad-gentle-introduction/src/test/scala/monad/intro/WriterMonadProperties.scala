@@ -9,9 +9,9 @@ object WriterMonadProperties extends Properties("WriterMonad") {
 
   private implicit val m: Monad[ListStringWriter] = MonadInstances.writerInstance
 
-  include(ListStringWriterWriterMonadProperties)
+  include(ListStringWriterMonadProperties)
 
-  private case object ListStringWriterWriterMonadProperties extends AbstractMonadProperties[String, Int, Int, ListStringWriter]("ListString") {
+  private case object ListStringWriterMonadProperties extends AbstractMonadProperties[String, Int, Int, ListStringWriter]("ListString") {
 
     import Generators.listArbitrary
 

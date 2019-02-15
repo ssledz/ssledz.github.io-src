@@ -49,6 +49,12 @@ object MonadInstances {
     override def flatMap[A, B](xs: Writer[L, A])(f: A => Writer[L, B]): Writer[L, B] = xs.flatMap(f)
   }
 
+  implicit def stateInstance[S]: Monad[({type ST[A] = State[S, A]})#ST] = new Monad[({type ST[A] = State[S, A]})#ST] {
+    override def pure[A](a: A): State[S, A] = State.pure(a)
+
+    override def flatMap[A, B](xs: State[S, A])(f: A => State[S, B]): State[S, B] = xs.flatMap(f)
+  }
+
   implicit def readerInstance[E]: Monad[({type R[A] = Reader[E, A]})#R] = new Monad[({type R[A] = Reader[E, A]})#R] {
     override def pure[A](x: A): Reader[E, A] = Reader.pure(x)
 
