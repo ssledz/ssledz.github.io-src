@@ -18,5 +18,6 @@ object MonadProperties extends Properties("Monad") {
   include(WriterMonadProperties)
   include(StateMonadProperties)
   include(IdMonadProperties)
+  include(ReaderMonadProperties)
 }
 
