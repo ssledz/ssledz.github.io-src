@@ -7,7 +7,7 @@ object WriterMonadProperties extends Properties("WriterMonad") {
 
   type ListStringWriter[A] = Writer[List[String], A]
 
-  private implicit val m: Monad[ListStringWriter] = MonadInstances.writerInstance
+  private implicit val m: Monad[ListStringWriter] = MonadInstances.monadWriterInstance
 
   include(ListStringWriterMonadProperties)
 
