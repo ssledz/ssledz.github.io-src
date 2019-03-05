@@ -8,8 +8,15 @@ object MonadOption extends App {
   val ys = List("11", "0", "33", "3", "3", "1")
   val zs = List("0", "22", "33", "2", "-3", "2")
 
-  val data = xs.zip(ys).zip(zs)
-    .map(x => (x._1._1, x._1._2, x._2))
+  def flatten[A](xs: List[((A, A), A)]): List[(A, A, A)] = for {
+    ((x1, x2), x3) <- xs
+  } yield (x1, x2, x3)
+
+  def map3[A, B](x: (A, A, A))(f: A => B): (B, B, B) = x match {
+    case (x1, x2, x3) => (f(x1), f(x2), f(x3))
+  }
+
+  val data = flatten(xs.zip(ys).zip(zs))
 
   def pipeline = data
     .map(z => (DivModule.lift(DivModule.div, -1)).tupled(z))
@@ -20,7 +27,7 @@ object MonadOption extends App {
   println(value)
 
   def pipeline2 = data
-    .map(x => (Option.pure(x._1), Option.pure(x._2), Option.pure(x._3)))
+    .map(x => map3(x)(Option.pure))
     .map(z => (DivModuleWithOption.div _).tupled(z))
     .filter(_.isNonEmpty)
 
@@ -82,7 +89,7 @@ object DivModuleWithOption {
     try {
       Some(str.toDouble)
     } catch {
-      case e : Throwable => None
+      case e: Throwable => None
     }
   }
 
@@ -109,9 +116,9 @@ object OptionModule {
 
     def map[B](f: A => B): Option[B] = flatMap(a => Option.pure(f(a)))
 
-    def isEmpty : Boolean
+    def isEmpty: Boolean
 
-    def isNonEmpty : Boolean = !isEmpty
+    def isNonEmpty: Boolean = !isEmpty
 
   }
 
