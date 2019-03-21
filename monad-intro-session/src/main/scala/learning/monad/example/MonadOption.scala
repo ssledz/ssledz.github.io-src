@@ -7,15 +7,15 @@ object MonadOption extends App {
 
   import OptionModule._
 
-  val xs = List("11", "22", "0", "9", "9", null)
-  val ys = List("11", "0", "33", "3", "3", "1")
-  val zs = List("0", "22", "33", "2", "-3", "2")
+  val xs = List("11", "22", "0" , "9", "9", null)
+  val ys = List("11", "0" , "33", "3", "3", "1")
+  val zs = List("0" , "22", "33", "2", "-3", "2")
 
-  val data = flatten(xs.zip(ys).zip(zs))
+  val data: List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
 
-  def pipeline = data
-    .map(z => (DivModule.lift(DivModule.div, -1)).tupled(z))
-    .filter(_ >= 0)
+    def pipeline: List[Double] = data
+      .map((DivModule.lift(DivModule.div, -1)).tupled(_))
+      .filter(_ != -1)
 
   val value = pipeline
 
@@ -25,6 +25,7 @@ object MonadOption extends App {
     .map(x => map3(x)(Option.pure))
     .map(z => (DivModuleWithOption.div _).tupled(z))
     .filter(_.isNonEmpty)
+    .map(_.get)
 
   val value2 = pipeline2
 
@@ -68,6 +69,8 @@ object MonadOption extends App {
 
       def isNonEmpty: Boolean = !isEmpty
 
+      def get : A
+
     }
 
     object Option {
@@ -77,11 +80,13 @@ object MonadOption extends App {
     }
 
     case class Some[A](get: A) extends Option[A] {
-      override def isEmpty: Boolean = false
+      def isEmpty: Boolean = false
     }
 
     case object None extends Option[Nothing] {
-      override def isEmpty: Boolean = true
+      def isEmpty: Boolean = true
+
+      def get : Nothing = ???
     }
 
 
