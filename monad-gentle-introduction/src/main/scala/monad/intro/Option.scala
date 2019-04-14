@@ -15,7 +15,7 @@ object Option {
 
   def empty[A]: Option[A] = None
 
-  def pure[A](a: A): Option[A] = Some(a)
+  def pure[A](a: A): Option[A] = if (a == null) None else Some(a)
 
 }
 
