@@ -51,25 +51,25 @@ object MonadInstances {
       xs.flatMap(f)
   }
 
-  implicit def monadEitherInstance[A]: Monad[({type E[B] = Either[A, B]})#E] = new Monad[({type E[B] = Either[A, B]})#E] {
+  implicit def monadEitherInstance[A]: Monad[({type λ[B] = Either[A, B]})#λ] = new Monad[({type λ[B] = Either[A, B]})#λ] {
     override def pure[B](x: B): Either[A, B] = Either.pure(x)
 
     override def flatMap[B, C](xs: Either[A, B])(f: B => Either[A, C]): Either[A, C] = xs.flatMap(f)
   }
 
-  implicit def monadWriterInstance[L](implicit m: Monoid[L]): Monad[({type W[A] = Writer[L, A]})#W] = new Monad[({type W[A] = Writer[L, A]})#W] {
+  implicit def monadWriterInstance[L](implicit m: Monoid[L]): Monad[({type λ[A] = Writer[L, A]})#λ] = new Monad[({type λ[A] = Writer[L, A]})#λ] {
     override def pure[A](x: A): Writer[L, A] = Writer.pure(x)
 
     override def flatMap[A, B](xs: Writer[L, A])(f: A => Writer[L, B]): Writer[L, B] = xs.flatMap(f)
   }
 
-  implicit def monadStateInstance[S]: Monad[({type ST[A] = State[S, A]})#ST] = new Monad[({type ST[A] = State[S, A]})#ST] {
+  implicit def monadStateInstance[S]: Monad[({type λ[A] = State[S, A]})#λ] = new Monad[({type λ[A] = State[S, A]})#λ] {
     override def pure[A](a: A): State[S, A] = State.pure(a)
 
     override def flatMap[A, B](xs: State[S, A])(f: A => State[S, B]): State[S, B] = xs.flatMap(f)
   }
 
-  implicit def monadReaderInstance[E]: Monad[({type R[A] = Reader[E, A]})#R] = new Monad[({type R[A] = Reader[E, A]})#R] {
+  implicit def monadReaderInstance[E]: Monad[({type λ[A] = Reader[E, A]})#λ] = new Monad[({type λ[A] = Reader[E, A]})#λ] {
     override def pure[A](x: A): Reader[E, A] = Reader.pure(x)
 
     override def flatMap[A, B](xs: Reader[E, A])(f: A => Reader[E, B]): Reader[E, B] = xs.flatMap(f)
