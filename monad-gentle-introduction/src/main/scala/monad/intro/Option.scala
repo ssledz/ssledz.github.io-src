@@ -9,6 +9,8 @@ trait Option[+A] {
 
   def map[B](f: A => B): Option[B] = flatMap(a => Some(f(a)))
 
+  def filter(p : A => Boolean) : Option[A] = flatMap(a => if(p(a)) Option.pure(a) else None)
+
 }
 
 object Option {
