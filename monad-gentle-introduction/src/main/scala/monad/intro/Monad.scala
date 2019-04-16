@@ -1,19 +1,48 @@
 package monad.intro
 
+import applicative.Applicative
 import monad.intro.IdInstances.Id
 
-trait Monad[M[_]] {
+import scala.annotation.tailrec
+
+trait Monad[M[_]] extends Applicative[M] {
 
   def pure[A](x: A): M[A]
 
   def flatMap[A, B](xs: M[A])(f: A => M[B]): M[B]
 
-  def map[A, B](xs: M[A])(f: A => B): M[B] = flatMap(xs)(x => pure(f(x)))
+  def ap[A, B](fab: M[A => B])(fa: M[A]): M[B] = flatMap(fab) { f =>
+    flatMap(fa) { a =>
+      pure(f(a))
+    }
+  }
+
+  override def map[A, B](xs: M[A])(f: A => B): M[B] = flatMap(xs)(x => pure(f(x)))
 
 }
 
 object Monad {
+
   def apply[M[_]](implicit m: Monad[M]): Monad[M] = m
+
+  def sequenceM[M[_], A](xs: List[M[A]])(implicit M: Monad[M]): M[List[A]] = xs match {
+    case Nil => M.pure(List.empty)
+    case h :: t => M.flatMap(h) { x =>
+      M.map(sequenceM(t)) { xxs =>
+        ::(x, xxs)
+      }
+    }
+  }
+
+  def replicateM[M[_], A](n: Int)(x: M[A])(implicit M: Monad[M]): M[List[A]] = {
+    @tailrec
+    def go(count: Int, acc: List[M[A]]): List[M[A]] =
+      if (count == 0) acc
+      else go(count - 1, ::(x, acc))
+
+    sequenceM(go(n, List.empty))
+  }
+
 }
 
 object MonadSyntax {
@@ -24,6 +53,7 @@ object MonadSyntax {
 
     def map[B](f: A => B)(implicit m: Monad[M]): M[B] = m.map(xs)(f)
 
+    def **[B](ys: M[B])(implicit m: Monad[M]): M[(A, B)] = m.map2(xs, ys)((_, _))
   }
 
 }
@@ -76,5 +106,12 @@ object MonadInstances {
   }
 
   implicit val monadIdInstance: Monad[Id] = IdInstances.id
+
+  implicit val monadIOInstance: Monad[IO] = new Monad[IO] {
+    override def pure[A](x: A): IO[A] = IO.pure(x)
+
+    override def flatMap[A, B](xs: IO[A])(f: A => IO[B]): IO[B] =
+      xs.flatMap(f)
+  }
 
 }

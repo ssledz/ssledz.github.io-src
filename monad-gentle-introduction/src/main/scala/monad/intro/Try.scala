@@ -13,12 +13,14 @@ trait Try[+A] {
 
 object Try {
 
-  def pure[A](a: => A): Try[A] =
+  def apply[A](a: => A): Try[A] =
     try {
       Success(a)
     } catch {
       case e: Exception => Failure(e)
     }
+
+  def pure[A](a: => A): Try[A] = apply(a)
 
 }
 
