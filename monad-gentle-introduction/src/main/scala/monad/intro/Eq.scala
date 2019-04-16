@@ -19,7 +19,7 @@ object Eq {
 
 object EqSyntax {
 
-  implicit class EqOps[A](a: A) {
+  implicit class EqOps[A](val a: A) extends AnyVal {
     def ===(b: A)(implicit eq: Eq[A]): Boolean = eq === (a, b)
   }
 

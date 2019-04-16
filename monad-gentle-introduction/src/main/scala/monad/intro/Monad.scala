@@ -47,7 +47,7 @@ object Monad {
 
 object MonadSyntax {
 
-  implicit class MonadOps[A, M[_] : Monad](xs: M[A]) {
+  implicit class MonadOps[A, M[_]](val xs: M[A]) extends AnyVal {
 
     def flatMap[B](f: A => M[B])(implicit m: Monad[M]): M[B] = m.flatMap(xs)(f)
 

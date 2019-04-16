@@ -30,11 +30,11 @@ object Applicative {
 
 object ApplicativeSyntax {
 
-  implicit class ApplicativeOps[A, B, F[_] : Applicative](fab: F[A => B]) {
+  implicit class ApplicativeOps[A, B, F[_]](val fab: F[A => B]) extends AnyVal {
     def ap(fa: F[A])(implicit F: Applicative[F]): F[B] = F.ap(fab)(fa)
   }
 
-  implicit class ApplicativeTupleOps[A, B, F[_] : Applicative](tuple: (F[A], F[B])) {
+  implicit class ApplicativeTupleOps[A, B, F[_]](val tuple: (F[A], F[B])) extends AnyVal {
     def mapN[C](f: (A, B) => C)(implicit F: Applicative[F]): F[C] = F.map2(tuple._1, tuple._2)(f)
   }
 

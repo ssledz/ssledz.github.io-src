@@ -12,7 +12,7 @@ object Functor {
 
 object FunctorSyntax {
 
-  implicit class FunctorOps[A, F[_] : Functor](fa: F[A]) {
+  implicit class FunctorOps[A, F[_]](val fa: F[A]) extends AnyVal {
 
     def map[B](f: A => B)(implicit F: Functor[F]): F[B] = F.map(fa)(f)
 
